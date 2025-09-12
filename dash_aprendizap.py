@@ -29,10 +29,10 @@ try:
     df_users = pd.read_parquet('Dados/usuarios_RUP_reduzido.parquet')
     print(f"✅ usuarios_RUP_reduzido.parquet carregado: {len(df_users)} registros")
     
-    print("🔄 Tentando carregar fct_teachers_contents_interactions_classified_2_reduzido.parquet...")
-    df_interactions = pd.read_parquet('Dados/fct_teachers_contents_interactions_classified_2_reduzido.parquet', 
+    print("🔄 Tentando carregar fct_teachers_contents_interactions_classified_3_reduzido.parquet...")
+    df_interactions = pd.read_parquet('Dados/fct_teachers_contents_interactions_classified_3_reduzido.parquet', 
                                      columns=['unique_id', 'numero_interacao', 'user_agent_device_type', 'event_classification'])
-    print(f"✅ fct_teachers_contents_interactions_classified_2_reduzido.parquet carregado: {len(df_interactions)} registros")
+    print(f"✅ fct_teachers_contents_interactions_classified_3_reduzido.parquet carregado: {len(df_interactions)} registros")
     
     print("✅ Dados reais carregados com sucesso")
 except Exception as e:
@@ -287,6 +287,62 @@ def setup_montserrat_font():
         # Fallback para fonte padrão
         plt.rcParams['font.family'] = 'sans-serif'
         return False
+
+# Função para configurar rótulos do eixo x baseado no período temporal
+def configure_temporal_x_labels(ax, date_index, rotation=0):
+    """
+    Configura os rótulos do eixo x para gráficos temporais.
+    Se o período for maior que 12 meses, mostra apenas janeiro (mês 1) e julho (mês 7).
+    Caso contrário, mostra todos os meses.
+    
+    Args:
+        ax: eixo matplotlib
+        date_index: índice com datas (pandas PeriodIndex ou similar)
+        rotation: rotação dos rótulos (padrão 0)
+    """
+    try:
+        # Converter para string se necessário
+        if hasattr(date_index, 'strftime'):
+            date_strings = [d.strftime('%Y-%m') for d in date_index]
+        else:
+            date_strings = [str(d) for d in date_index]
+        
+        # Calcular o número de meses únicos
+        unique_months = len(set(date_strings))
+        
+        if unique_months > 12:
+            # Período maior que 1 ano: mostrar apenas janeiro e julho
+            filtered_labels = []
+            filtered_positions = []
+            
+            for i, date_str in enumerate(date_strings):
+                # Extrair ano e mês
+                try:
+                    year, month = date_str.split('-')
+                    month_int = int(month)
+                    
+                    # Mostrar apenas mês 1 (janeiro) ou 7 (julho)
+                    if month_int in [1, 7]:
+                        filtered_labels.append(date_str)
+                        filtered_positions.append(i)
+                except:
+                    # Se não conseguir extrair ano/mês, incluir todos
+                    filtered_labels.append(date_str)
+                    filtered_positions.append(i)
+            
+            # Configurar eixo x
+            ax.set_xticks(filtered_positions)
+            ax.set_xticklabels(filtered_labels, rotation=rotation)
+        else:
+            # Período menor ou igual a 1 ano: mostrar todos os meses
+            ax.set_xticks(range(len(date_strings)))
+            ax.set_xticklabels(date_strings, rotation=rotation)
+            
+    except Exception as e:
+        print(f"Erro ao configurar rótulos temporais: {e}")
+        # Fallback: mostrar todos os rótulos
+        ax.set_xticks(range(len(date_strings)))
+        ax.set_xticklabels(date_strings, rotation=rotation)
 
 # Função para carregar o CSS externo
 def load_css():
@@ -1075,8 +1131,8 @@ def server(input, output, session):
         ax.set_ylabel("Novos Usuários", fontsize=11, fontweight='500', color='#333')
         ax.set_xlabel(period_label, fontsize=11, fontweight='500', color='#333')
         
-        # Rotacionar labels do eixo x para melhor legibilidade
-        ax.tick_params(axis='x', rotation=0)
+        # Configurar rótulos do eixo x baseado no período temporal
+        configure_temporal_x_labels(ax, period_counts.index, rotation=0)
         
         # Adicionar legenda
         ax.legend(loc='upper right', fontsize=10)
@@ -1468,8 +1524,8 @@ def server(input, output, session):
             ax.set_ylabel("Novos Usuários", fontsize=11, fontweight='500', color='#333')
             ax.set_xlabel("Mês", fontsize=11, fontweight='500', color='#333')
             
-            # Rotacionar labels do eixo x para melhor legibilidade
-            ax.tick_params(axis='x', rotation=0)
+            # Configurar rótulos do eixo x baseado no período temporal
+            configure_temporal_x_labels(ax, monthly_counts.index, rotation=0)
             
             # Adicionar legenda
             ax.legend(loc='upper right', fontsize=10)
@@ -1843,7 +1899,14 @@ def server(input, output, session):
             # Estilizar o gráfico
             scale_label = "Proporção" if chart_scale == "proportional" else "Total de Interações"
             ax.set_ylabel(scale_label, fontsize=10, fontweight='500', color='#333')
+            ax.set_xlabel("Grupo de Usuário", fontsize=12, fontweight='500', color='#333')
             ax.set_title('Interações por Classificação de Evento', fontsize=14, fontweight='bold', color='#8A2BE2')
+            
+            # Configurar eixo X com labels corretos
+            ax.set_xticks(range(len(event_group_counts.columns)))
+            ax.set_xticklabels(event_group_counts.columns)
+            ax.tick_params(axis='x', rotation=0)
+            
             ax.legend(bbox_to_anchor=(1.05, 1), loc='upper left', fontsize=9)
             ax.grid(True, alpha=0.3, axis='y')
             ax.spines['top'].set_visible(False)
