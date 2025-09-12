@@ -16,11 +16,11 @@ COPY requirements.txt requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-# 6. Copie todo o código do seu projeto para o diretório de trabalho
-COPY . .
-
-# 7. Criar diretório para dados se não existir
+# 6. Criar diretório para dados se não existir
 RUN mkdir -p Dados Data
+
+# 7. Copie todo o código do seu projeto para o diretório de trabalho
+COPY . .
 
 # 8. Configurar variáveis de ambiente
 ENV PORT=8080
