@@ -1,0 +1,31 @@
+# Dockerfile para versão demo - sem dependência de arquivos externos
+FROM python:3.10-slim
+
+# 1. Instalar dependências do sistema necessárias para matplotlib e pyarrow
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. Defina o diretório de trabalho dentro do container
+WORKDIR /app
+
+# 3. Copie o arquivo de dependências e instale os pacotes Python
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 4. Copie apenas o arquivo do dashboard demo
+COPY dash_aprendizap_demo.py .
+
+# 5. Configurar variáveis de ambiente
+ENV PORT=8080
+ENV PYTHONPATH=/app
+ENV MPLBACKEND=Agg
+
+# 6. Expor a porta
+EXPOSE 8080
+
+# 7. Comando para iniciar sua aplicação
+CMD ["python", "-m", "shiny", "run", "--host", "0.0.0.0", "--port", "8080", "dash_aprendizap_demo.py"]

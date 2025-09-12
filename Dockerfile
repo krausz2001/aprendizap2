@@ -44,4 +44,4 @@ EXPOSE 8080
 
 # 11. Comando para iniciar sua aplicação
 # Use a variável $PORT que o Google Cloud fornece
-CMD ["python", "-m", "shiny", "run", "--host", "0.0.0.0", "--port", "8080", "dash_aprendizap.py"]
+CMD ["python", "-m", "shiny", "run", "--host", "0.0.0.0", "--port", "8080", "dash_aprendizap_demo.py"]
