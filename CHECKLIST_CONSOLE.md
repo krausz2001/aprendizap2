@@ -23,7 +23,7 @@
 - [ ] Nome: `aprendizap-dashboard-trigger`
 - [ ] Evento: Push para branch `master`
 - [ ] Configuração: Arquivo de configuração
-- [ ] Arquivo: `cloudbuild-simple.yaml`
+- [ ] Arquivo: `cloudbuild-simple.yaml` (ou `cloudbuild-no-lfs.yaml` se LFS não funcionar)
 
 ### 4. Configurar Variáveis
 No trigger, adicione estas variáveis de substituição:

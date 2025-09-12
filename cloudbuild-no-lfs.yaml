@@ -1,18 +1,13 @@
-# Configuração simplificada para Cloud Build via Console
+# Configuração sem Git LFS - para casos onde LFS não funciona
 steps:
-  # 1. Instalar Git LFS e clonar repositório
+  # 1. Clonar repositório
   - name: 'gcr.io/cloud-builders/git'
-    entrypoint: 'bash'
     args:
-      - '-c'
-      - |
-        apt-get update && apt-get install -y git-lfs
-        git lfs install
-        git clone https://github.com/$_REPO_NAME.git source
-        cd source
-        git lfs pull
+      - 'clone'
+      - 'https://github.com/$_REPO_NAME.git'
+      - 'source'
 
-  # 2. Build da imagem Docker
+  # 2. Build da imagem Docker (sem Git LFS)
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'

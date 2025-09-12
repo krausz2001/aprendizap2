@@ -1,0 +1,37 @@
+# Dockerfile sem dependência do Git LFS
+# Use este se o Git LFS não funcionar no Cloud Build
+
+# 1. Use uma imagem base oficial do Python
+FROM python:3.10-slim
+
+# 2. Instalar dependências do sistema necessárias para matplotlib e pyarrow
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    libc6-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# 3. Defina o diretório de trabalho dentro do container
+WORKDIR /app
+
+# 4. Copie o arquivo de dependências e instale os pacotes Python
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 5. Copie o código do projeto
+COPY dash_aprendizap.py .
+
+# 6. Criar diretórios para dados
+RUN mkdir -p Dados Data
+
+# 7. Configurar variáveis de ambiente
+ENV PORT=8080
+ENV PYTHONPATH=/app
+ENV MPLBACKEND=Agg
+
+# 8. Expor a porta
+EXPOSE 8080
+
+# 9. Comando para iniciar sua aplicação
+CMD ["python", "-m", "shiny", "run", "--host", "0.0.0.0", "--port", "8080", "dash_aprendizap.py"]

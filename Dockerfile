@@ -24,8 +24,12 @@ RUN pip install --no-cache-dir --upgrade pip && \
 # 6. Copie todo o código do seu projeto para o diretório de trabalho
 COPY . .
 
-# 7. Baixar arquivos LFS após copiar o código
-RUN git lfs pull
+# 7. Configurar Git LFS e baixar arquivos (se necessário)
+RUN if [ -d ".git" ]; then \
+        git lfs pull; \
+    else \
+        echo "Não é um repositório Git, pulando git lfs pull"; \
+    fi
 
 # 8. Criar diretório para dados se não existir
 RUN mkdir -p Dados Data
