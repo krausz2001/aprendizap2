@@ -1,23 +1,16 @@
 # Configuração simplificada para Cloud Build via Console
 steps:
-  # 1. Instalar Git LFS e clonar repositório
+  # 1. Clonar repositório
   - name: 'gcr.io/cloud-builders/git'
-    entrypoint: 'bash'
     args:
-      - '-c'
-      - |
-        apt-get update && apt-get install -y git-lfs
-        git lfs install
-        git clone https://github.com/$_REPO_NAME.git source
-        cd source
-        git lfs pull
+      - 'clone'
+      - 'https://github.com/$_REPO_NAME.git'
+      - 'source'
 
   # 2. Build da imagem Docker
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
-      - '-f'
-      - 'Dockerfile.demo'
       - '-t'
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
       - '-t'
@@ -55,7 +48,7 @@ steps:
 
 # Substituições (configure no Console)
 substitutions:
-  _REPO_NAME: 'seu-usuario/seu-repositorio'  # SUBSTITUA AQUI
+  _REPO_NAME: 'krausz2001/aprendizap2'
   _SERVICE_NAME: 'aprendizap-dashboard'
   _REGION: 'us-east4'
 
