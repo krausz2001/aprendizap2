@@ -20,4 +20,4 @@ Data/
 export_rup/
 Dados/usuarios_RUP.parquet
 Dados/fct_teachers_contents_interactions_classified_2.parquet
-Dados/fct_teachers_contents_interactions_classified_2_reduzido.parquet
+Dados/fct_teachers_contents_interactions_classified_3_reduzido.parquet

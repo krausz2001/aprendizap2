@@ -30,7 +30,7 @@ try:
     print(f"✅ usuarios_RUP_reduzido.parquet carregado: {len(df_users)} registros")
     
     print("🔄 Tentando carregar fct_teachers_contents_interactions_classified_3_reduzido.parquet...")
-    df_interactions = pd.read_parquet('Dados/fct_teachers_contents_interactions_classified_3_reduzido.parquet', 
+    df_interactions = pd.read_parquet('Dados/fct_teachers_contents_interactions_classified_2_reduzido.parquet', 
                                      columns=['unique_id', 'numero_interacao', 'user_agent_device_type', 'event_classification'])
     print(f"✅ fct_teachers_contents_interactions_classified_3_reduzido.parquet carregado: {len(df_interactions)} registros")
     
