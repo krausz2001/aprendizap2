@@ -1,0 +1,69 @@
+steps:
+  # 1. Instalar Git LFS no Cloud Build
+  - name: 'gcr.io/cloud-builders/git'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        apt-get update && apt-get install -y git-lfs
+        git lfs install
+
+  # 2. Clonar o repositório com LFS
+  - name: 'gcr.io/cloud-builders/git'
+    args:
+      - 'clone'
+      - 'https://github.com/$_REPO_NAME.git'
+      - 'source'
+    env:
+      - 'REPO_NAME=$_REPO_NAME'
+
+  # 3. Baixar arquivos LFS
+  - name: 'gcr.io/cloud-builders/git'
+    dir: 'source'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - |
+        git lfs pull
+
+  # 4. Fazer build da imagem Docker
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest'
+      - 'source'
+
+  # 5. Fazer push da imagem para o Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+
+  # 6. Deploy no Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - '$_SERVICE_NAME'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
+      - '--region'
+      - '$_REGION'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+      - '--port'
+      - '8080'
+
+substitutions:
+  _REPO_NAME: 'seu-usuario/seu-repositorio'  # Substitua pelo seu repositório
+  _SERVICE_NAME: 'aprendizap-dashboard'
+  _REGION: 'us-central1'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
+  machineType: 'E2_HIGHCPU_8'
