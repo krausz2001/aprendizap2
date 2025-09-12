@@ -6,7 +6,7 @@
 # Configurações
 PROJECT_ID="seu-project-id"  # Substitua pelo seu Project ID
 SERVICE_NAME="aprendizap-dashboard"
-REGION="us-central1"
+REGION="us-east4"
 IMAGE_NAME="gcr.io/$PROJECT_ID/$SERVICE_NAME"
 
 echo "🚀 Iniciando deploy do AprendiZAP Dashboard..."
