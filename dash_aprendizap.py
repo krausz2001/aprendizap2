@@ -16,10 +16,24 @@ import gc
 # ======================================================================================
 
 # Tentar carregar dados reais, se não existir, criar dados de demonstração
+print("🔍 Verificando arquivos de dados...")
+print(f"📁 Diretório atual: {os.getcwd()}")
+print(f"📁 Conteúdo do diretório: {os.listdir('.')}")
+if os.path.exists('Dados'):
+    print(f"📁 Conteúdo do diretório Dados: {os.listdir('Dados')}")
+else:
+    print("❌ Diretório Dados não existe!")
+
 try:
+    print("🔄 Tentando carregar usuarios_RUP_reduzido.parquet...")
     df_users = pd.read_parquet('Dados/usuarios_RUP_reduzido.parquet')
+    print(f"✅ usuarios_RUP_reduzido.parquet carregado: {len(df_users)} registros")
+    
+    print("🔄 Tentando carregar fct_teachers_contents_interactions_classified_2_reduzido.parquet...")
     df_interactions = pd.read_parquet('Dados/fct_teachers_contents_interactions_classified_2_reduzido.parquet', 
                                      columns=['unique_id', 'numero_interacao', 'user_agent_device_type', 'event_classification'])
+    print(f"✅ fct_teachers_contents_interactions_classified_2_reduzido.parquet carregado: {len(df_interactions)} registros")
+    
     print("✅ Dados reais carregados com sucesso")
 except Exception as e:
     print(f"⚠️ Erro ao carregar dados reais: {e}")
