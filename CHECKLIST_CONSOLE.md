@@ -23,11 +23,11 @@
 - [ ] Nome: `aprendizap-dashboard-trigger`
 - [ ] Evento: Push para branch `master`
 - [ ] Configuração: Arquivo de configuração
-- [ ] Arquivo: `cloudbuild-simple.yaml` (ou `cloudbuild-no-lfs.yaml` se LFS não funcionar)
+- [ ] Arquivo: `cloudbuild-no-git.yaml` (versão mais simples, sem Git LFS)
 
 ### 4. Configurar Variáveis
 No trigger, adicione estas variáveis de substituição:
-- [ ] `_REPO_NAME`: `seu-usuario/seu-repositorio`
+- [ ] `_REPO_NAME`: `krausz2001/aprendizap2`
 - [ ] `_SERVICE_NAME`: `aprendizap-dashboard`
 - [ ] `_REGION`: `us-east4`
 
