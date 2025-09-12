@@ -1,13 +1,6 @@
 # Configuração simplificada para Cloud Build via Console
 steps:
-  # 1. Clonar repositório
-  - name: 'gcr.io/cloud-builders/git'
-    args:
-      - 'clone'
-      - 'https://github.com/$_REPO_NAME.git'
-      - 'source'
-
-  # 2. Build da imagem Docker
+  # 1. Build da imagem Docker (usando código já disponível)
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'build'
@@ -15,15 +8,15 @@ steps:
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
       - '-t'
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:latest'
-      - 'source'
+      - '.'
 
-  # 3. Push da imagem
+  # 2. Push da imagem
   - name: 'gcr.io/cloud-builders/docker'
     args:
       - 'push'
       - 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA'
 
-  # 4. Deploy no Cloud Run
+  # 3. Deploy no Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'gcloud'
     args:
